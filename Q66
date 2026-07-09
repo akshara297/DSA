@@ -1,0 +1,6 @@
+from collections import Counter
+
+def top_k_frequent(nums, k):
+    counts = Counter(nums)
+    # Using nlargest achieves O(n log k) under the hood efficiently
+    return [item[0] for item in heapq.nlargest(k, counts.items(), key=lambda x: x[1])]
