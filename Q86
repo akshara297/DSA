@@ -1,0 +1,7 @@
+def min_cost_climbing_stairs(cost):
+    down_one = down_two = 0
+    for i in range(2, len(cost) + 1):
+        curr = min(down_one + cost[i - 1], down_two + cost[i - 2])
+        down_two = down_one
+        down_one = curr
+    return down_one
