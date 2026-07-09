@@ -1,0 +1,63 @@
+from collections import deque
+
+# =========================================================================
+# 1. Count of Smaller Numbers After Self (Fenwick Tree / Binary Indexed Tree)
+# Time Complexity: O(N log N) | Space Complexity: O(N)
+# =========================================================================
+class FenwickTree:
+    def __init__(self, size):
+        self.tree = [0] * (size + 1)
+        
+    def update(self, i: int, delta: int):
+        while i < len(self.tree):
+            self.tree[i] += delta
+            i += i & (-i)
+            
+    def query(self, i: int) -> int:
+        total = 0
+        while i > 0:
+            total += self.tree[i]
+            i -= i & (-i)
+        return total
+
+class AdvancedDataStructures:
+    
+    def countSmaller(self, nums: list[int]) -> list[int]:
+        if not nums:
+            return []
+            
+        # Coordinate compression: Map negative/large numbers to a clean 1-to-M index range
+        sorted_unique = sorted(list(set(nums)))
+        ranks = {val: i + 1 for i, val in enumerate(sorted_unique)}
+        
+        bit = FenwickTree(len(ranks))
+        result = []
+        
+        # Traverse backwards to process elements to the "right" first
+        for num in reversed(nums):
+            rank = ranks[num]
+            # Query elements strictly smaller than the current rank
+            result.append(bit.query(rank - 1))
+            # Insert current element into the Fenwick Tree
+            bit.update(rank, 1)
+            
+        return result[::-1]
+
+    # =========================================================================
+    # 2. Largest Rectangle in Histogram (Monotonic Stack)
+    # Time Complexity: O(N) | Space Complexity: O(N)
+    # =========================================================================
+    def largestRectangleArea(self, heights: list[int]) -> int:
+        stack = [] # Stores indices of heights in a strictly increasing order
+        max_area = 0
+        # Append a sentinel 0 value to cleanly flush out remaining elements in the stack at the end
+        extended_heights = heights + [0]
+        
+        for i, h in enumerate(extended_heights):
+            # Maintain monotonicity: if current height is shorter, pop and calculate areas
+            while stack and extended_heights[stack[-1]] > h:
+                height_idx = stack.pop()
+                height = extended_heights[height_idx]
+                
+                # Determine width boundary
+                #
