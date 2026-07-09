@@ -1,0 +1,37 @@
+class AdvancedStringBitSolutions:
+    
+    # =========================================================================
+    # 1. Shortest Palindrome (KMP / Longest Prefix-Suffix Array)
+    # Time Complexity: O(N) | Space Complexity: O(N)
+    # =========================================================================
+    def shortestPalindrome(self, s: str) -> str:
+        if not s:
+            return s
+            
+        # Create a combined string: s + special_sentinel + reverse(s)
+        # The sentinel '#' ensures our KMP table doesn't match beyond the boundaries of s
+        rev_s = s[::-1]
+        combined = s + '#' + rev_s
+        
+        # Build KMP Lookup Table (Partial Match / LPS Array)
+        lps = [0] * len(combined)
+        for i in range(1, len(combined)):
+            j = lps[i - 1]
+            while j > 0 and combined[i] != combined[j]:
+                j = lps[j - 1]
+            if combined[i] == combined[j]:
+                j += 1
+            lps[i] = j
+            
+        # lps[-1] now gives us the length of the longest palindromic prefix in s
+        longest_palindrome_prefix_len = lps[-1]
+        
+        # Take the non-palindromic suffix, reverse it, and attach it to the front
+        remaining_suffix = s[longest_palindrome_prefix_len:]
+        return remaining_suffix[::-1] + s
+
+    # =========================================================================
+    # 2. Number of Valid Words for Each Puzzle (Bitmasking + Subset Iteration)
+    # Time Complexity: O(Words * L + Puzzles * 2^7) | Space Complexity: O(Words)
+    # =========================================================================
+    def findNumOfValidWords(self, words: list[str], puzzles: list[str]) ->
