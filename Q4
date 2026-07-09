@@ -1,0 +1,8 @@
+import heapq
+
+def find_kth_min_max(arr, k):
+    # Kth Minimum using a max-heap approach (inverting values for Python's min-heap)
+    kth_min = heapq.nsmallest(k, arr)[-1]
+    # Kth Maximum using a min-heap approach
+    kth_max = heapq.nlargest(k, arr)[-1]
+    return kth_min, kth_max
