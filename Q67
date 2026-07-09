@@ -1,0 +1,18 @@
+def merge_k_lists(lists):
+    dummy = ListNode(0)
+    tail = dummy
+    heap = []
+    
+    # Store tuples: (node.val, unique_id, node) to avoid structural comparison conflicts
+    for i, l_head in enumerate(lists):
+        if l_head:
+            heapq.heappush(heap, (l_head.val, i, l_head))
+            
+    while heap:
+        val, i, node = heapq.heappop(heap)
+        tail.next = node
+        tail = tail.next
+        if node.next:
+            heapq.heappush(heap, (node.next.val, i, node.next))
+            
+    return dummy.next
