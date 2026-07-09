@@ -1,0 +1,9 @@
+def valid_tree(n, edges):
+    if len(edges) != n - 1:
+        return False
+        
+    dsu = DSU(n)
+    for u, v in edges:
+        if not dsu.union(u, v):
+            return False  # Cycle detected
+    return True
