@@ -1,0 +1,9 @@
+def knapsack(weights, values, max_capacity):
+    dp = [0] * (max_capacity + 1)
+    
+    for i in range(len(weights)):
+        # Iterate backwards to avoid using the same item multiple times
+        for w in range(max_capacity, weights[i] - 1, -1):
+            dp[w] = max(dp[w], values[i] + dp[w - weights[i]])
+            
+    return dp[max_capacity]
