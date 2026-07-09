@@ -1,0 +1,6 @@
+def hamming_weight(n):
+    count = 0
+    while n:
+        n &= (n - 1)  # Clear the lowest set bit
+        count += 1
+    return count
