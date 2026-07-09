@@ -1,0 +1,10 @@
+def rob(nums):
+    rob_prev_house = 0  # dp[i-1]
+    rob_two_houses_ago = 0  # dp[i-2]
+    
+    for num in nums:
+        curr = max(rob_prev_house, rob_two_houses_ago + num)
+        rob_two_houses_ago = rob_prev_house
+        rob_prev_house = curr
+        
+    return rob_prev_house
