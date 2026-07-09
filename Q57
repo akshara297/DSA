@@ -1,0 +1,5 @@
+def search_bst(root, val):
+    curr = root
+    while curr and curr.val != val:
+        curr = curr.left if val < curr.val else curr.right
+    return curr
