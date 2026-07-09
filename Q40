@@ -1,0 +1,20 @@
+def max_sliding_window(nums, k):
+    q = deque()  # Stores indices
+    res = []
+    
+    for idx, num in enumerate(nums):
+        # Remove indices out of current window scope
+        if q and q[0] < idx - k + 1:
+            q.popleft()
+            
+        # Maintain monotonic property (decreasing order)
+        while q and nums[q[-1]] < num:
+            q.pop()
+            
+        q.append(idx)
+        
+        # Append window max once window size reaches k
+        if idx >= k - 1:
+            res.append(nums[q[0]])
+            
+    return res
