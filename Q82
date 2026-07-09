@@ -1,0 +1,17 @@
+def network_delay_time(times, n, k):
+    graph = defaultdict(list)
+    for u, v, w in times:
+        graph[u].append((v, w))
+        
+    min_heap = [(0, k)]
+    distances = {}
+    
+    while min_heap:
+        time, node = heapq.heappop(min_heap)
+        if node not in distances:
+            distances[node] = time
+            for neighbor, weight in graph[node]:
+                if neighbor not in distances:
+                    heapq.heappush(min_heap, (time + weight, neighbor))
+                    
+    return max(distances.values()) if len(distances) == n else -1
