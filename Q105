@@ -1,0 +1,46 @@
+import heapq
+from collections import Counter
+
+class AdvancedWindowHeapSolutions:
+    
+    # =========================================================================
+    # 1. Subarrays with K Different Integers (Sliding Window Helper)
+    # Time Complexity: O(N) | Space Complexity: O(N)
+    # =========================================================================
+    def subarraysWithKDistinct(self, nums: list[int], k: int) -> int:
+        # The Core Mathematical Insight: Exactly(K) = AtMost(K) - AtMost(K - 1)
+        return self.atMostK(nums, k) - self.atMostK(nums, k - 1)
+        
+    def atMostK(self, nums: list[int], k: int) -> int:
+        freq = {}
+        left = 0
+        count = 0
+        
+        for right, num in enumerate(nums):
+            freq[num] = freq.get(num, 0) + 1
+            
+            # If our window has more than K distinct elements, shrink it from the left
+            while len(freq) > k:
+                freq[nums[left]] -= 1
+                if freq[nums[left]] == 0:
+                    del freq[nums[left]]
+                left += 1
+                
+            # The number of valid subarrays ending at 'right' is equal to the window size
+            count += (right - left + 1)
+            
+        return count
+
+    # =========================================================================
+    # 2. Minimum Window Substring (Two Pointers / Sliding Window)
+    # Time Complexity: O(N + M) | Space Complexity: O(M) where N=len(s), M=len(t)
+    # =========================================================================
+    def minWindow(self, s: str, t: str) -> str:
+        if not s or not t:
+            return ""
+            
+        target_counts = Counter(t)
+        window_counts = {}
+        
+        # 'required' is the number of unique characters in t that must match in frequency
+        required = len(target_counts
