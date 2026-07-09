@@ -1,0 +1,48 @@
+from collections import deque, defaultdict
+
+class AdvancedGraphSolutions:
+    
+    # =========================================================================
+    # 1. Critical Connections in a Network (Tarjan's Bridge-Finding Algorithm)
+    # Time Complexity: O(V + E) | Space Complexity: O(V + E)
+    # =========================================================================
+    def criticalConnections(self, n: int, connections: list[list[int]]) -> list[list[int]]:
+        # Build adjacency list
+        graph = defaultdict(list)
+        for u, v in connections:
+            graph[u].append(v)
+            graph[v].append(u)
+            
+        # rank[i] stores the discovery time of node i
+        # low[i] stores the lowest rank reachable from node i via back-edges
+        rank = [-1] * n
+        low = [-1] * n
+        bridges = []
+        
+        def dfs(node: int, parent: int, discovery_time: int):
+            rank[node] = low[node] = discovery_time
+            
+            for neighbor in graph[node]:
+                if neighbor == parent:
+                    continue
+                
+                if rank[neighbor] == -1:
+                    # Neighbor hasn't been visited; recurse down the DFS tree
+                    dfs(neighbor, node, discovery_time + 1)
+                    
+                    # Upon return, update low-link value of the current node
+                    low[node] = min(low[node], low[neighbor])
+                    
+                    # If neighbor cannot reach back to 'node' or any ancestral node, 
+                    # the edge between them is a bridge.
+                    if low[neighbor] > rank[node]:
+                        bridges.append([node, neighbor])
+                else:
+                    # Neighbor is already visited; it's a back-edge. Update low-link.
+                    low[node] = min(low[node], rank[neighbor])
+                    
+        dfs(0, -1, 0)
+        return bridges
+
+    # =========================================================================
+    # 2. Word Ladder II (BFS Layering + DFS Backtracking)
