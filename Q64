@@ -1,0 +1,14 @@
+def flatten(root):
+    prev = None
+    
+    def rev_post_order(node):
+        nonlocal prev
+        if not node: return
+        rev_post_order(node.right)
+        rev_post_order(node.left)
+        
+        node.right = prev
+        node.left = None
+        prev = node
+        
+    rev_post_order(root)
