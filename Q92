@@ -1,0 +1,12 @@
+def can_partition(nums):
+    total_sum = sum(nums)
+    if total_sum % 2 != 0:
+        return False
+        
+    target = total_sum // 2
+    dp = 1  # Bitmask representing achievable sums (0 is reachable initially)
+    
+    for num in nums:
+        dp |= (dp << num)
+        
+    return bool((dp >> target) & 1)
