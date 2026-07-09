@@ -1,0 +1,24 @@
+# Iterative Approach
+def binary_search_iterative(nums, target):
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return -1
+
+# Recursive Approach
+def binary_search_recursive(nums, target, low, high):
+    if low > high:
+        return -1
+    mid = (low + high) // 2
+    if nums[mid] == target:
+        return mid
+    elif nums[mid] < target:
+        return binary_search_recursive(nums, target, mid + 1, high)
+    else:
+        return binary_search_recursive(nums, target, low, mid - 1)
