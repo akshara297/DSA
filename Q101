@@ -1,0 +1,125 @@
+import math
+
+class AdvancedDPSolutions:
+    
+    # =========================================================================
+    # 1. Super Egg Drop
+    # Time Complexity: O(K * log N) | Space Complexity: O(K)
+    # =========================================================================
+    def superEggDrop(self, K: int, N: int) -> int:
+        # dp[i] represents the max floors we can check with i eggs
+        dp = [0] * (K + 1)
+        moves = 0
+        
+        # Keep track of moves until we can cover at least N floors
+        while dp[K] < N:
+            moves += 1
+            # Traverse backwards to use values from the previous move iteration
+            for eggs in range(K, 0, -1):
+                dp[eggs] = dp[eggs] + dp[eggs - 1] + 1
+                
+        return moves
+
+    # =========================================================================
+    # 2. Burst Balloons
+    # Time Complexity: O(N^3) | Space Complexity: O(N^2)
+    # =========================================================================
+    def maxCoins(self, nums: list[int]) -> int:
+        # Add implicit boundaries of 1 to handle edges cleanly
+        A = [1] + nums + [1]
+        n = len(A)
+        dp = [[0] * n for _ in range(n)]
+        
+        # length is the span of the sub-interval we are calculating
+        for length in range(1, n - 1):
+            for i in range(1, n - length):
+                j = i + length - 1
+                # Try making every balloon k within [i, j] the last one to burst
+                for k in range(i, j + 1):
+                    coins = A[i-1] * A[k] * A[j+1]
+                    total = dp[i][k-1] + coins + dp[k+1][j]
+                    dp[i][j] = max(dp[i][j], total)
+                    
+        return dp[1][n-2]
+
+    # =========================================================================
+    # 3. Cherry Pickup II
+    # Time Complexity: O(R * C^2) | Space Complexity: O(C^2)
+    # =========================================================================
+    def cherryPickup(self, grid: list[list[int]]) -> int:
+        rows, cols = len(grid), len(grid[0])
+        
+        # Initialize DP table for the bottom row
+        # dp[c1][c2] stores max cherries when Robot 1 is at c1 and Robot 2 is at c2
+        dp = [[-1] * cols for _ in range(cols)]
+        
+        # Base case: Bottom row configuration
+        for c1 in range(cols):
+            for c2 in range(cols):
+                dp[c1][c2] = grid[rows-1][c1] if c1 == c2 else grid[rows-1][c1] + grid[rows-1][c2]
+                
+        # Transition upwards row by row
+        for r in range(rows - 2, -1, -1):
+            next_dp = [[-1] * cols for _ in range(cols)]
+            for c1 in range(cols):
+                for c2 in range(cols):
+                    # Current cherries collected in this row
+                    current_cherries = grid[r][c1] if c1 == c2 else grid[r][c1] + grid[r][c2]
+                    
+                    max_next = -1
+                    # Explore all 9 combinations of moves for the next row
+                    for dc1 in [-1, 0, 1]:
+                        for dc2 in [-1, 0, 1]:
+                            nc1, nc2 = c1 + dc1, c2 + dc2
+                            if 0 <= nc1 < cols and 0 <= nc2 < cols:
+                                max_next = max(max_next, dp[nc1][nc2])
+                    
+                    if max_next != -1:
+                        next_dp[c1][c2] = current_cherries + max_next
+            dp = next_dp
+            
+        return dp[0][cols-1]
+
+    # =========================================================================
+    # 4. Minimum Cost to Cut a Stick
+    # Time Complexity: O(M^3) | Space Complexity: O(M^2)
+    # =========================================================================
+    def minCost(self, n: int, cuts: list[int]) -> int:
+        # Sort and pad with the outer boundaries of the stick
+        A = sorted(cuts) + [0, n]
+        A.sort()
+        m = len(A)
+        
+        # dp[i][j] stores the min cost to make all cuts between A[i] and A[j]
+        dp = [[0] * m for _ in range(m)]
+        
+        # diff is the gap between the indices i and j
+        for diff in range(2, m):
+            for i in range(m - diff):
+                j = i + diff
+                dp[i][j] = float('inf')
+                # Try making the first cut at position k between i and j
+                for k in range(i + 1, j):
+                    cost = A[j] - A[i]
+                    dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j] + cost)
+                    
+        return dp[0][m-1]
+
+# =============================================================================
+# Example Driver Execution
+# =============================================================================
+if __name__ == "__main__":
+    solver = AdvancedDPSolutions()
+    
+    print("--- 1. Super Egg Drop ---")
+    print(f"Result (K=2, N=6): {solver.superEggDrop(2, 6)}")  # Expected: 3
+    
+    print("\n--- 2. Burst Balloons ---")
+    print(f"Result ([3,1,5,8]): {solver.maxCoins([3,1,5,8])}")  # Expected: 167
+    
+    print("\n--- 3. Cherry Pickup II ---")
+    grid = [[3,1,1],[2,5,1],[1,5,5],[2,1,1]]
+    print(f"Result: {solver.cherryPickup(grid)}")  # Expected: 24
+    
+    print("\n--- 4. Minimum Cost to Cut a Stick ---")
+    print(f"Result (n=7, cuts=[1,3,4,5]): {solver.minCost(7, [1,3,4,5])}")  # Expected: 16
