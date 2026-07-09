@@ -1,0 +1,27 @@
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    def find(self, i):
+        if self.parent[i] == i: return i
+        self.parent[i] = self.find(self.parent[i])  # Path compression
+        return self.parent[i]
+    def union(self, i, j):
+        root_i, root_j = self.find(i), self.find(j)
+        if root_i != root_j:
+            self.parent[root_i] = root_j
+            return True
+        return False
+
+def kruskals_mst(n, edges):
+    edges.sort(key=lambda x: x[2])  # Sort by weight
+    dsu = DSU(n)
+    mst_weight = 0
+    edges_count = 0
+    
+    for u, v, weight in edges:
+        if dsu.union(u, v):
+            mst_weight += weight
+            edges_count += 1
+            if edges_count == n - 1: break
+            
+    return mst_weight
