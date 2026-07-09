@@ -1,0 +1,24 @@
+class Codec:
+    def serialize(self, root):
+        vals = []
+        def pre_order(node):
+            if not node:
+                vals.append("X")
+            else:
+                vals.append(str(node.val))
+                pre_order(node.left)
+                pre_order(node.right)
+        pre_order(root)
+        return ",".join(vals)
+
+    def deserialize(self, data):
+        def build():
+            val = next(vals)
+            if val == "X": return None
+            node = TreeNode(int(val))
+            node.left = build()
+            node.right = build()
+            return node
+            
+        vals = iter(data.split(","))
+        return build()
