@@ -1,0 +1,23 @@
+def pacific_atlantic(heights):
+    if not heights: return []
+    rows, cols = len(heights), len(heights[0])
+    pacific_reachable = set()
+    atlantic_reachable = set()
+    
+    def dfs(r, c, reachable_set):
+        reachable_set.add((r, c))
+        for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:
+            nr, nc = r + dr, c + dc
+            if (0 <= nr < rows and 0 <= nc < cols and 
+                (nr, nc) not in reachable_set and heights[nr][nc] >= heights[r][c]):
+                dfs(nr, nc, reachable_set)
+                
+    # Run from top/bottom rows and left/right columns boundary edges
+    for j in range(cols):
+        dfs(0, j, pacific_reachable)
+        dfs(rows - 1, j, atlantic_reachable)
+    for i in range(rows):
+        dfs(i, 0, pacific_reachable)
+        dfs(i, cols - 1, atlantic_reachable)
+        
+    return list(pacific_reachable.intersection(atlantic_reachable))
