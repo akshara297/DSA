@@ -1,0 +1,15 @@
+def permute(nums):
+    result = []
+    
+    def backtrack(start):
+        if start == len(nums):
+            result.append(nums[:]) # Append a copy
+            return
+            
+        for i in range(start, len(nums)):
+            nums[start], nums[i] = nums[i], nums[start] # Choose
+            backtrack(start + 1)                        # Explore
+            nums[start], nums[i] = nums[i], nums[start] # Unchoose (Backtrack)
+            
+    backtrack(0)
+    return result
