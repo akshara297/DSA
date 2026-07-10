@@ -1,0 +1,24 @@
+from collections import deque, defaultdict
+
+def canFinish(numCourses, prerequisites):
+    adj_list = defaultdict(list)
+    in_degree = [0] * numCourses
+    
+    for dest, src in prerequisites:
+        adj_list[src].append(dest)
+        in_degree[dest] += 1
+        
+    # Queue up all nodes with 0 dependencies
+    queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+    visited_count = 0
+    
+    while queue:
+        node = queue.popleft()
+        visited_count += 1
+        
+        for neighbor in adj_list[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+                
+    return visited_count == numCourses
