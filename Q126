@@ -1,0 +1,22 @@
+from collections import deque
+
+def maxSlidingWindow(nums, k):
+    q = deque() # Stores indices
+    result = []
+    
+    for i, num in enumerate(nums):
+        # Remove smaller elements from the back
+        while q and nums[q[-1]] < num:
+            q.pop()
+            
+        q.append(i)
+        
+        # Remove the element if it's outside the window
+        if q[0] == i - k:
+            q.popleft()
+            
+        # The window is fully formed after k-1 elements
+        if i >= k - 1:
+            result.append(nums[q[0]])
+            
+    return result
