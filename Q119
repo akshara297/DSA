@@ -1,0 +1,13 @@
+def lowestCommonAncestor(root, p, q):
+    if not root or root == p or root == q:
+        return root
+        
+    left = lowestCommonAncestor(root.left, p, q)
+    right = lowestCommonAncestor(root.right, p, q)
+    
+    # If both sides return a node, current root is the LCA
+    if left and right:
+        return root
+        
+    # Otherwise, pass up whichever side found a match
+    return left if left else right
